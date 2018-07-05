@@ -7,16 +7,20 @@ public class EditMapHexGenerator : MonoBehaviour {
     [SerializeField]
     private GameObject HexPrefab;
     [SerializeField]
+    private GameObject TrianglePrefab;
+    [SerializeField]
     private float offset;
     private int cols=12, rows=6;
     private GameObject[,] hexMatrix;
-    public int[,] numTriInHexMatrix;
+    [HideInInspector]
+    public List<GameObject> listTri;
+    public int[,] numTriInHex; //bao tam giac che mat
     public static float HexHeight,HexWidth;
     // Use this for initialization
     private void Awake()
     {
         hexMatrix = new GameObject[cols, rows];
-        numTriInHexMatrix = new int[cols, rows];
+        numTriInHex = new int[cols, rows];
         HexHeight = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.y*offset;
         HexWidth = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.x*offset;    
     }
@@ -32,6 +36,45 @@ public class EditMapHexGenerator : MonoBehaviour {
                 hexMatrix[i,j]=Instantiate(HexPrefab, transform);
             }
         }
+    }
+    private int calTri(Tri tri)
+    {
+        GameObject curHex = hexMatrix[(int)tri.Pos.x, (int)tri.Pos.y];
+        int res = curHex.GetComponent<Hex>().Num;
+        while (true)
+        {
+            curHex = getHex(curHex.GetComponent<Hex>().Pos, (tri.Direction + 3) % 6);
+            if (curHex != null)
+            {
+                if (curHex.GetComponent<Hex>().Num > 0)
+                {
+                    res += curHex.GetComponent<Hex>().Num;
+                }
+                else break;
+            }
+            else break;
+        }
+        return res;
+    }
+    public void UpdateTri()
+    {
+        foreach(GameObject obj in listTri)
+        {
+            obj.GetComponent<Tri>().Num = calTri(obj.GetComponent<Tri>());
+            obj.GetComponent<Tri>().Refresh();
+        }
+    }
+    public void AddTri(GameObject parent,int direction)
+    {
+        TrianglePrefab.GetComponent<Tri>().Direction = direction;
+        TrianglePrefab.GetComponent<Tri>().Pos = parent.GetComponent<Hex>().Pos;
+        listTri.Add(Instantiate(TrianglePrefab, parent.transform));
+        UpdateTri();
+    }
+    public void RemoveTri(GameObject obj)
+    {
+        listTri.Remove(obj);
+        Destroy(obj);
     }
     public GameObject getHex(Vector2 originPos,int direction)
     {

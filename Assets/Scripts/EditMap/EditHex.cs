@@ -6,6 +6,7 @@ using UnityEngine;
 public class EditHex : MonoBehaviour {
     [SerializeField]
     private EditMapHexGenerator HexGenObj;
+
     private bool touching = false;
     private GameObject SelectedObject = null;
     //This method returns the game object that was clicked using Raycast 2D
@@ -21,41 +22,84 @@ public class EditHex : MonoBehaviour {
         }
         else return null;
     }
+    bool checkHasTri(GameObject obj, int direction)
+    {
+        if (obj.transform.childCount > 1)
+        {
+            for (int i = 1; i < obj.transform.childCount; i++)
+            {
+                if (obj.transform.GetChild(i).GetComponent<Tri>().Direction == direction)
+                {
+                    GameObject nearHex = HexGenObj.getHex(obj.GetComponent<Hex>().Pos, direction);
+                    if (nearHex != null)
+                        HexGenObj.numTriInHex[(int)nearHex.GetComponent<Hex>().Pos.x, (int)nearHex.GetComponent<Hex>().Pos.y]--;
+                    HexGenObj.RemoveTri(obj.transform.GetChild(i).gameObject);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     void touchBegin(Vector2 screenPosition)
     {
-
+        SelectedObject= ObjectClicked(screenPosition);
     }
     void touchHold(Vector2 screenPosition)
     {
-        GameObject curSelect = ObjectClicked(screenPosition);
-        if (curSelect != SelectedObject)
-        {
-            if (SelectedObject != null)
-            {
-                SelectedObject.transform.GetChild(0).DOScale(1f, 0.3f).SetEase(Ease.OutCirc);
-            }
-            SelectedObject = curSelect;
-            if (SelectedObject != null)
-            {
-                SelectedObject.transform.GetChild(0).DOScale(0.8f, 0.3f).SetEase(Ease.OutCirc);
-            }
-        }
+     
     }
     void touchEnd(Vector2 screenPosition)
     {
-        if (SelectedObject != null)
+        GameObject curSelect = ObjectClicked(screenPosition);
+        //edit hex
+        if (SelectedObject != null && curSelect==SelectedObject)
         {
-            if(HexGenObj.numTriInHexMatrix[(int)SelectedObject.GetComponent<Hex>().Pos.x, (int)SelectedObject.GetComponent<Hex>().Pos.y] == 0)
+            if (HexGenObj.numTriInHex[(int)SelectedObject.GetComponent<Hex>().Pos.x, (int)SelectedObject.GetComponent<Hex>().Pos.y] == 0)
             {
                 SelectedObject.GetComponent<Hex>().changeNum();
-                SelectedObject.transform.GetChild(0).DOScale(1f, 0.5f).SetEase(Ease.OutElastic);
+                if(SelectedObject.GetComponent<Hex>().Num == 0)
+                {
+                    Tri[] listTri=SelectedObject.GetComponentsInChildren<Tri>();
+                    foreach (Tri tri in listTri)
+                    {
+                        GameObject nearHex = HexGenObj.getHex(tri.GetComponent<Tri>().Pos, tri.GetComponent<Tri>().Direction);
+                        if (nearHex != null)
+                            HexGenObj.numTriInHex[(int)nearHex.GetComponent<Hex>().Pos.x, (int)nearHex.GetComponent<Hex>().Pos.y]--;
+                        HexGenObj.RemoveTri(tri.gameObject);
+                    }
+                }
+                HexGenObj.UpdateTri();
+                SelectedObject.transform.GetChild(0).DOScale(0.8f, 0.5f).SetEase(Ease.OutElastic).From();
             }
-            SelectedObject = null;
         }
+        //tao tam giac
+        if (SelectedObject != null && curSelect!=SelectedObject)
+        {
+            if (SelectedObject.GetComponent<Hex>().Num > 0)
+            {
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
+                Vector2 directionVector = new Vector2(worldPos.x - SelectedObject.transform.position.x, worldPos.y - SelectedObject.transform.position.y);
+                int Angle = Mathf.RoundToInt(Vector2.SignedAngle(Vector2.up, directionVector) / 60) * 60;
+                Angle = Angle < 0 ? Angle += 360 : Angle;
+                if (!checkHasTri(SelectedObject, Angle / 60))
+                {
+                    GameObject nearHex = HexGenObj.getHex(SelectedObject.GetComponent<Hex>().Pos, Angle / 60);
+                    if (nearHex == null)
+                    {
+                        HexGenObj.AddTri(SelectedObject, Angle / 60);
+                    }
+                    else if (nearHex.GetComponent<Hex>().Num == 0)
+                    {
+                        HexGenObj.AddTri(SelectedObject, Angle / 60);
+                        HexGenObj.numTriInHex[(int)nearHex.GetComponent<Hex>().Pos.x, (int)nearHex.GetComponent<Hex>().Pos.y]++;
+                    }
+                }
+            }
+        }
+        SelectedObject = null;
     }
     void FixedUpdate()
     {
-
         if (Input.GetMouseButtonDown(0) && !touching)
         {
             touching = true;
