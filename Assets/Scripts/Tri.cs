@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,14 +12,15 @@ public class Tri : MonoBehaviour {
 
     void Start () {
         HexHeight = EditMapHexGenerator.HexHeight;
+        Vector2 TrianglePosition = (Quaternion.Euler(0, 0, (60 * Direction)) * Vector2.up) * (HexHeight / 2) * 0.785f;
+        transform.eulerAngles = new Vector3(0, 0, (60 * Direction));
+        transform.localPosition = new Vector3();
+        transform.DOLocalMove(TrianglePosition, 0.5f).SetEase(Ease.OutCirc);
+        transform.GetChild(0).eulerAngles = Vector3.zero;
         Refresh();
     }
     public void Refresh()
     {
-        Vector2 TrianglePosition = (Quaternion.Euler(0, 0, (60 * Direction)) * Vector2.up) * (HexHeight / 2) * 0.785f;
-        transform.eulerAngles = new Vector3(0, 0, (60 * Direction));
-        transform.localPosition = TrianglePosition;
-        transform.GetChild(0).eulerAngles = Vector3.zero;
         GetComponentInChildren<TextMesh>().text = Num.ToString();
     }
 }

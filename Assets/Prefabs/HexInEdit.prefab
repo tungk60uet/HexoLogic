@@ -52,7 +52,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1570203628706974}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.878166, y: 5.6287503, z: 0}
+  m_LocalPosition: {x: 1.225594, y: 2.831059, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4771588944061592}
@@ -88,20 +88,20 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.4666667, y: 1.3166667}
-    newSize: {x: 1.75, y: 2}
+    oldSize: {x: 0.84117645, y: 0.7529412}
+    newSize: {x: 2.64, y: 2.37}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.36381578, y: -0.6425164}
-      - {x: 0.37438297, y: -0.63777494}
-      - {x: 0.73349094, y: 0.0008714199}
-      - {x: 0.37557983, y: 0.62564754}
-      - {x: -0.36196947, y: 0.6406927}
-      - {x: -0.7303033, y: -0.0061662197}
+    - - {x: -0.19090787, y: -0.34254527}
+      - {x: 0.19788396, y: -0.34368813}
+      - {x: 0.3899685, y: 0.0020177364}
+      - {x: 0.1930446, y: 0.33645058}
+      - {x: -0.17798373, y: 0.3430146}
+      - {x: -0.39037192, y: 0.005906105}
 --- !u!114 &114885200654873978
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -121,7 +121,7 @@ MonoBehaviour:
   - {fileID: 21300004, guid: edcd2460f96e9ef4685e5a0b8e5de4d0, type: 3}
   - {fileID: 21300006, guid: edcd2460f96e9ef4685e5a0b8e5de4d0, type: 3}
   Num: 0
-  Pos: {x: 11, y: 5}
+  Pos: {x: 2, y: 4}
 --- !u!212 &212304662691034410
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -162,7 +162,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.75, y: 2}
+  m_Size: {x: 2.64, y: 2.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -207,7 +207,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.6, y: 1.4333333}
+  m_Size: {x: 1.29, y: 1.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

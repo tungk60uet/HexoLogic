@@ -10,7 +10,9 @@ public class EditMapHexGenerator : MonoBehaviour {
     private GameObject TrianglePrefab;
     [SerializeField]
     private float offset;
-    private int cols=12, rows=6;
+
+    private int cols=3, rows=5;
+    [HideInInspector]
     private GameObject[,] hexMatrix;
     [HideInInspector]
     public List<GameObject> listTri;
@@ -22,20 +24,72 @@ public class EditMapHexGenerator : MonoBehaviour {
         hexMatrix = new GameObject[cols, rows];
         numTriInHex = new int[cols, rows];
         HexHeight = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.y*offset;
-        HexWidth = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.x*offset;    
+        HexWidth = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.x*offset;
+        
     }
     void Start () {
         transform.localPosition = new Vector3(-(cols - 1) * (3.1f * HexWidth / 4) / 2, (-(rows + 0.5f) / 2 + 1) * HexHeight, 10);
-        for (int i = 0; i < cols; i++)
+
+        string data = PlayerPrefs.GetString("data");
+        if (data != "")
         {
-            for (int j = 0; j < rows; j++)
+            string[] arr = data.Split('|');
+            int numOfHex = int.Parse(arr[0]);
+            int c = 0;
+            for (int i = 0; i < numOfHex; i++)
             {
-                HexPrefab.GetComponent<Hex>().Num = 0;
-                HexPrefab.GetComponent<Hex>().Pos = new Vector2(i,j);
-                HexPrefab.transform.localPosition = new Vector3(i * (3.1f * HexWidth / 4), j * HexHeight - (i % 2) * (HexHeight / 2));
-                hexMatrix[i,j]=Instantiate(HexPrefab, transform);
+                c += 3;
+                Vector2 pos = new Vector2(int.Parse(arr[c - 2]), int.Parse(arr[c - 1]));
+                HexPrefab.GetComponent<Hex>().Num = int.Parse(arr[c]);
+                HexPrefab.GetComponent<Hex>().Pos = pos;
+                HexPrefab.transform.localPosition = new Vector3(pos.x * (3.1f * HexWidth / 4), pos.y * HexHeight - (pos.x % 2) * (HexHeight / 2));
+                hexMatrix[(int)pos.x, (int)pos.y] = Instantiate(HexPrefab, transform);
+            }
+            c++;
+            int numOfTri = int.Parse(arr[c]);
+            for (int i = 0; i < numOfTri; i++)
+            {
+                c += 4;
+                Vector2 pos = new Vector2(int.Parse(arr[c - 3]), int.Parse(arr[c - 2]));
+                AddTri(hexMatrix[(int)pos.x, (int)pos.y], int.Parse(arr[c]));
             }
         }
+        else
+        {
+            for (int i = 0; i < cols; i++)
+            {
+                for (int j = 0; j < rows; j++)
+                {
+                    HexPrefab.GetComponent<Hex>().Num = 0;
+                    HexPrefab.GetComponent<Hex>().Pos = new Vector2(i, j);
+                    HexPrefab.transform.localPosition = new Vector3(i * (3.1f * HexWidth / 4), j * HexHeight - (i % 2) * (HexHeight / 2));
+                    hexMatrix[i, j] = Instantiate(HexPrefab, transform);
+                }
+            }
+        }
+    }
+    public void SaveData()
+    {
+        string data = "";
+        data += cols * rows+"|";
+        foreach(GameObject obj in hexMatrix)
+        {
+            data += obj.GetComponent<Hex>().Pos.x + "|";
+            data += obj.GetComponent<Hex>().Pos.y + "|";
+            data += obj.GetComponent<Hex>().Num+"|";
+            
+        }
+        data += listTri.Count + "|";
+        foreach(GameObject obj in listTri)
+        {
+            data += obj.GetComponent<Tri>().Pos.x + "|";
+            data += obj.GetComponent<Tri>().Pos.y + "|";
+            data += obj.GetComponent<Tri>().Num + "|";
+            data += obj.GetComponent<Tri>().Direction + "|";
+        }
+        data = data.TrimEnd('|');
+        Debug.Log("");
+        PlayerPrefs.SetString("data", data);
     }
     private int calTri(Tri tri)
     {
