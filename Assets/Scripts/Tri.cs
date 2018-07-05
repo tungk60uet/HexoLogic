@@ -7,11 +7,11 @@ public class Tri : MonoBehaviour {
     public int Num;
     public int Direction;
     public Vector2 Pos;
-    private float HexHeight;
+    [SerializeField]
+    private SpriteRenderer HexSprite;
     // Use this for initialization
-
     void Start () {
-        HexHeight = EditMapHexGenerator.HexHeight;
+        float HexHeight = HexSprite.bounds.size.y * GameSetting.hexOffset;
         Vector2 TrianglePosition = (Quaternion.Euler(0, 0, (60 * Direction)) * Vector2.up) * (HexHeight / 2) * 0.785f;
         transform.eulerAngles = new Vector3(0, 0, (60 * Direction));
         transform.localPosition = new Vector3();

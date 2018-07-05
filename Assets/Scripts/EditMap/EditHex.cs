@@ -83,16 +83,7 @@ public class EditHex : MonoBehaviour {
                 Angle = Angle < 0 ? Angle += 360 : Angle;
                 if (!checkHasTri(SelectedObject, Angle / 60))
                 {
-                    GameObject nearHex = HexGenObj.getHex(SelectedObject.GetComponent<Hex>().Pos, Angle / 60);
-                    if (nearHex == null)
-                    {
-                        HexGenObj.AddTri(SelectedObject, Angle / 60);
-                    }
-                    else if (nearHex.GetComponent<Hex>().Num == 0)
-                    {
-                        HexGenObj.AddTri(SelectedObject, Angle / 60);
-                        HexGenObj.numTriInHex[(int)nearHex.GetComponent<Hex>().Pos.x, (int)nearHex.GetComponent<Hex>().Pos.y]++;
-                    }
+                    HexGenObj.AddTri(SelectedObject, Angle / 60);
                 }
             }
         }

@@ -140,8 +140,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Num: 0
-  Direction: 3
-  Pos: {x: 3, y: 8}
+  Direction: 4
+  Pos: {x: 1, y: 2}
+  HexSprite: {fileID: 212208564255820212, guid: 2fea5205734a1d94399f01a1e3d5c4fd,
+    type: 2}
 --- !u!212 &212215371944272084
 SpriteRenderer:
   m_ObjectHideFlags: 1

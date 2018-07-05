@@ -8,28 +8,24 @@ public class EditMapHexGenerator : MonoBehaviour {
     private GameObject HexPrefab;
     [SerializeField]
     private GameObject TrianglePrefab;
-    [SerializeField]
-    private float offset;
 
-    private int cols=3, rows=5;
+    int cols=GameSetting.cols, rows=GameSetting.rows;
     [HideInInspector]
-    private GameObject[,] hexMatrix;
+    public GameObject[,] hexMatrix;
     [HideInInspector]
     public List<GameObject> listTri;
-    public int[,] numTriInHex; //bao tam giac che mat
+    public int[,] numTriInHex;
     public static float HexHeight,HexWidth;
     // Use this for initialization
     private void Awake()
     {
         hexMatrix = new GameObject[cols, rows];
         numTriInHex = new int[cols, rows];
-        HexHeight = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.y*offset;
-        HexWidth = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.x*offset;
-        
+        HexHeight = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.y*GameSetting.hexOffset;
+        HexWidth = HexPrefab.GetComponent<SpriteRenderer>().bounds.size.x*GameSetting.hexOffset;
     }
     void Start () {
         transform.localPosition = new Vector3(-(cols - 1) * (3.1f * HexWidth / 4) / 2, (-(rows + 0.5f) / 2 + 1) * HexHeight, 10);
-
         string data = PlayerPrefs.GetString("data");
         if (data != "")
         {
@@ -123,6 +119,9 @@ public class EditMapHexGenerator : MonoBehaviour {
         TrianglePrefab.GetComponent<Tri>().Direction = direction;
         TrianglePrefab.GetComponent<Tri>().Pos = parent.GetComponent<Hex>().Pos;
         listTri.Add(Instantiate(TrianglePrefab, parent.transform));
+        GameObject nearParent = getHex(parent.GetComponent<Hex>().Pos, direction);
+        if(nearParent!=null)
+            numTriInHex[(int)nearParent.GetComponent<Hex>().Pos.x, (int)nearParent.GetComponent<Hex>().Pos.y]++;
         UpdateTri();
     }
     public void RemoveTri(GameObject obj)
