@@ -116,13 +116,25 @@ public class EditMapHexGenerator : MonoBehaviour {
     }
     public void AddTri(GameObject parent,int direction)
     {
-        TrianglePrefab.GetComponent<Tri>().Direction = direction;
-        TrianglePrefab.GetComponent<Tri>().Pos = parent.GetComponent<Hex>().Pos;
-        listTri.Add(Instantiate(TrianglePrefab, parent.transform));
         GameObject nearParent = getHex(parent.GetComponent<Hex>().Pos, direction);
-        if(nearParent!=null)
-            numTriInHex[(int)nearParent.GetComponent<Hex>().Pos.x, (int)nearParent.GetComponent<Hex>().Pos.y]++;
-        UpdateTri();
+        if (nearParent != null)
+        {
+            if (nearParent.GetComponent<Hex>().Num == 0)
+            {
+                TrianglePrefab.GetComponent<Tri>().Direction = direction;
+                TrianglePrefab.GetComponent<Tri>().Pos = parent.GetComponent<Hex>().Pos;
+                listTri.Add(Instantiate(TrianglePrefab, parent.transform));
+                numTriInHex[(int)nearParent.GetComponent<Hex>().Pos.x, (int)nearParent.GetComponent<Hex>().Pos.y]++;
+                UpdateTri();
+            }
+        }
+        else
+        {
+            TrianglePrefab.GetComponent<Tri>().Direction = direction;
+            TrianglePrefab.GetComponent<Tri>().Pos = parent.GetComponent<Hex>().Pos;
+            listTri.Add(Instantiate(TrianglePrefab, parent.transform));
+            UpdateTri();
+        }    
     }
     public void RemoveTri(GameObject obj)
     {
