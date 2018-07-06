@@ -21,8 +21,8 @@ public class EditListMap : MonoBehaviour {
             {
                 GameObject item = Instantiate(ItemPrefab, ListContainer.transform);
                 item.GetComponentInChildren<Text>().text = "Map " + id;
-                item.GetComponent<Button>().onClick.AddListener(delegate { ItemClick(item, int.Parse(id)); });
-                item.GetComponentsInChildren<Button>()[1].onClick.AddListener(delegate { DelItem(item, int.Parse(id)); });
+                item.GetComponent<Button>().onClick.AddListener(delegate { ItemClick(item, id); });
+                item.GetComponentsInChildren<Button>()[1].onClick.AddListener(delegate { DelItem(item, id); });
             }
         }
     }
@@ -39,22 +39,24 @@ public class EditListMap : MonoBehaviour {
 
     public void AddClick() {
         int id = PlayerPrefs.GetInt("LastId");
-        GameObject item=Instantiate(ItemPrefab, ListContainer.transform);
-        item.GetComponentInChildren<Text>().text = "Map " + id;
-        item.GetComponent<Button>().onClick.AddListener(delegate { ItemClick(item,id); });
-        item.GetComponentsInChildren<Button>()[1].onClick.AddListener(delegate { DelItem(item,id); });
-        listMapId.Add(id.ToString());
-        saveListMapId();
         PlayerPrefs.SetInt("LastId", id + 1);
+        string strId = id.ToString()+"_"+SystemInfo.deviceUniqueIdentifier;
+        GameObject item=Instantiate(ItemPrefab, ListContainer.transform);
+        item.GetComponentInChildren<Text>().text = "Map " + strId;
+        item.GetComponent<Button>().onClick.AddListener(delegate { ItemClick(item, strId); });
+        item.GetComponentsInChildren<Button>()[1].onClick.AddListener(delegate { DelItem(item, strId); });
+        listMapId.Add(strId);
+        saveListMapId();
+        
     }
-    void ItemClick(GameObject obj,int id)
+    void ItemClick(GameObject obj,string id)
     {
         EditMapHexGenerator.mapId = id;
         SceneManager.LoadScene("CreateMap");
     }
-    void DelItem(GameObject obj,int id)
+    void DelItem(GameObject obj,string id)
     {
-        listMapId.Remove(id.ToString());
+        listMapId.Remove(id);
         saveListMapId();
         Destroy(obj);
     }

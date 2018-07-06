@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EditMapHexGenerator : MonoBehaviour {
 
@@ -15,7 +16,7 @@ public class EditMapHexGenerator : MonoBehaviour {
     public List<GameObject> listTri;
     public int[,] numTriInHex;
     public static float HexHeight,HexWidth;
-    public static int mapId=0;
+    public static string mapId;
     // Use this for initialization
     private void Awake()
     {
@@ -63,6 +64,10 @@ public class EditMapHexGenerator : MonoBehaviour {
                 }
             }
         }
+    }
+    public void BackBtn()
+    {
+        SceneManager.LoadScene("ListMap");
     }
     public void SaveData()
     {
