@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EditHex : MonoBehaviour {
     [SerializeField]
@@ -91,6 +92,10 @@ public class EditHex : MonoBehaviour {
     }
     void FixedUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("ListMap");
+        }
         if (Input.GetMouseButtonDown(0) && !touching)
         {
             touching = true;
